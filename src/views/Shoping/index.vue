@@ -58,7 +58,7 @@
         </div>
         <div class="goods_bottom">
           <span>￥{{i.goods_price}}</span>
-          <button>选规格</button>
+          <button @click="ToDetail(i.id)">选规格</button>
         </div>
       </div>
     </div>
@@ -87,13 +87,21 @@ export default {
     };
   },
   methods: {
-    onTopLable(index) {
+    ToDetail(e) {
+      this.$router.push({
+        path: "/shopinfo",
+        query: {
+          id: e
+        }
+      });
+    },
+    async onTopLable(index) {
       this.id1 = this.classTotal[index].id;
-      this.classTwo();
+      await this.classTwo();
+      this.goodsList();
     },
     onLeftLable(index) {
       console.log("---" + index);
-      // Notify({ type: 'primary', message: index });
     },
     onTapLeft(e) {
       this.id2 = e;
@@ -156,13 +164,11 @@ export default {
         id: this.id2
       });
       console.log(goodsList);
-      if(goodsList.state===10001){
-       this.itemGoodsList = goodsList.data;
+      if (goodsList.state === 10001) {
+        this.itemGoodsList = goodsList.data;
+      } else {
+        this.itemGoodsList = "";
       }
-      else{
-        this.itemGoodsList=''
-      }
-     
     },
     getData() {
       return new Promise((resolve, rej) => {

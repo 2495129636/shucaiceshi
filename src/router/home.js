@@ -39,6 +39,22 @@ const dthome = [
 			index: 2
 		},
 	},
+	{
+		path: '/searchResult',
+		name: "searchResult",
+		component: ()=>(import('../views/Home/children/searchResult.vue')),
+		meta: {
+			index: 2
+		},
+	},
+	{
+		path: '/newsListDetal',
+		name: "newsListDetal",
+		component: ()=>(import('../views/Home/children/newsListDetal.vue')),
+		meta: {
+			index: 2
+		},
+	},
 ]
 
 export default dthome;

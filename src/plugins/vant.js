@@ -114,3 +114,8 @@ import {
     .use(GoodsAction)
     .use(GoodsActionIcon)
     .use(GoodsActionButton);
+
+
+import { PasswordInput, NumberKeyboard } from 'vant';
+
+Vue.use(PasswordInput).use(NumberKeyboard);

@@ -8,6 +8,7 @@ import my from './service/my'
 import mall from './service/mall'
 import address from './service/address'
 import recommend from './service/recommend'
+import order from './service/order'
 Vue.prototype.service = {
     home:home,
     login:login,
@@ -17,5 +18,6 @@ Vue.prototype.service = {
     address:address,
     mall:mall,
     recommend:recommend,
+    order:order
     
 };

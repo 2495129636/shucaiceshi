@@ -1,11 +1,7 @@
 <template>
   <div class="container">
-    <nav-header @btnClick="backBtn" :backShow="true" shopSkeleton title="限时购"></nav-header>
-    <van-swipe :autoplay="3000" class="banner">
-      <van-swipe-item v-for="(i, index) in imgList" :key="index">
-        <img :src="i.img" style="width: 100%;height: 35vh;" />
-      </van-swipe-item>
-    </van-swipe>
+    <nav-header @btnClick="backBtn" :backShow="true" shopSkeleton title="搜索结果"></nav-header>
+    
 
     <div v-for="(i,index) in itemGoodsList" :key="index" class="goodlist">
       <div class="goods_img">
@@ -20,12 +16,10 @@
           <p> {{i.goods_content}}</p>
         </div>
 		<div class="goods_bottom">
-          <span> ￥{{i.limited_time_purchase_price}}   <span class="limitPrice">￥{{i.goods_price}}</span></span>
+          <span>    ￥{{i.goods_price}}</span>
 		  <button @click="ToDetail(i.id)">选规格</button>
         </div>
-		<!-- <div class="goods_bottom">
-          <span>{{i.limited_time_purchase_time}}</span>
-        </div> -->
+	
       </div>
     </div>
   </div>
@@ -44,21 +38,17 @@ export default {
     };
   },
   methods: {
-    onTopLable(index) {
-      console.log("====" + index);
-    },
-    backBtn() {
-      this.$router.push("/dashboard/home");
-    },
-    ToDetail(e){
-     this.$router.push({
+   ToDetail(e){
+       this.$router.push({
         path:'/shopinfo',
         query:{
           id:e
         }
       })
+   },
+    backBtn() {
+      this.$router.push("/dashboard/home");
     },
-    
     async gethomeImg() {
       let Dengs = await this.service.home.gethomeImg();
       if (Dengs.state == -1) {
@@ -70,15 +60,16 @@ export default {
       }
       this.imgList = Dengs.data;
     },
-    async LimitTime() {
-      let LimitTime = await this.service.mall.LimitTime({});
-      console.log(LimitTime);
-      this.itemGoodsList = LimitTime.data;
+    async SearchResult() {
+      let SearchResult = await this.service.mall.SearchResult({
+          search:this.$route.query.search
+      });
+      console.log(SearchResult);
+      this.itemGoodsList = SearchResult.data;
     }
   },
   created() {
-    // this.gethomeImg();
-    this.LimitTime();
+    this.SearchResult();
   }
 };
 </script>

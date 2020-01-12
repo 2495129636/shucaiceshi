@@ -62,7 +62,7 @@ export default {
     },
 
     backBtn() {
-      this.$router.push("/dashboard/mine");
+      this.$router.push("/orders");
     },
     addAddress() {
       this.$router.push("/address/addressAdd");
@@ -70,7 +70,7 @@ export default {
     editAddress(e) {
       this.id = e;
       this.$router.push({
-        path: "/address/addressEdit",
+        path: "/addressOrderList",
         query: {
           id: e
         }

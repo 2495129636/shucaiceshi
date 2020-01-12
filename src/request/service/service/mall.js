@@ -15,7 +15,14 @@ export const services = {
     //商品列表
     GoodsList:(params)=>{
         return POST('Goods/goods',params)
+    },
+    LimitTime:(params)=>{
+        return POST('Goodslist/xsg',params)
+    },
+    SearchResult:(params)=>{
+        return POST('shouye/search',params)
     }
+
 
    
 };

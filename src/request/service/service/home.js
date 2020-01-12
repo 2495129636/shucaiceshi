@@ -63,7 +63,12 @@ export const services = {
     //购物车减一
     CartSub:(params)=>{
         return POST('order/jian',params)
+    },
+    //资讯详情
+    infomdetail:(params)=>{
+        return POST('shouye/details',params)
     }
 
+  
 };
 export default services;

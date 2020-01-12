@@ -14,10 +14,7 @@ import Jurisdiction from '@/views/Mine/jurisdiction/jurisdiction';
 import News from '@/views/Mine/news/news';
 import NewsList from '@/views/Mine/news/news_list';
 
-//收货地址管理
-// import Address from '@/views/Mine/address/';
-//地址编辑
-// import AddressEdit from '@/views/Mine/address/addlist';
+
 
 //反馈问题
 import Problem from '@/views/Mine/problem/problem';
@@ -118,6 +115,22 @@ const dtmine = [
 		path: '/address/addressEdit',
 		name: "addlist",
 		component: () => import('./../views/Mine/address/addressEdit.vue'),
+		meta: {
+			index: 3
+		},
+	},
+	{
+		path: '/addressOrder',
+		name: "addressOrder",
+		component: () => import('./../views/Mine/address/addressOrder.vue'),
+		meta: {
+			index: 3
+		},
+	},
+	{
+		path: '/addressOrderList',
+		name: "addressOrderList",
+		component: () => import('./../views/Mine/address/addressOrderEdit.vue'),
 		meta: {
 			index: 3
 		},

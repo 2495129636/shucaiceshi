@@ -76,12 +76,7 @@ export default {
       this.guige_id = this.guige[e].id;
     },
     addGoods() {
-      // if (this.info === "") {
-      //   this.info = 0;
-      //   this.info = this.info + 1;
-      // } else {
-      //   this.info = this.info + 1;
-      // }
+      
       this.addCart();
     },
     changeState() {

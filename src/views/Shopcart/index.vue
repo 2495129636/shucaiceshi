@@ -85,12 +85,10 @@
             }
           })
           console.log(this.pushId)
-          this.$router.push({
-            path: "/orders",
-            query: {
-              pushId: this.pushId,
-            }
-          });
+          
+          sessionStorage.setItem('pushId',JSON.stringify(this.pushId))
+          this.$router.push('/orders')
+          
         }
       },
       Choose() {
