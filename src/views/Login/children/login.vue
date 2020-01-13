@@ -31,7 +31,7 @@
         <div class="login-frame-img flex flex_y_center">
           <img src="../../../assets/login/yzm.png" />
         </div>
-        <input class="fs14" v-model="password" placeholder="密码" type="type" />
+        <input class="fs14" v-model="password" placeholder="密码" :type="type" />
         <div @click="glassesBtn" class="login-glasses">
           <img :src="glassesImg" />
         </div>
@@ -129,7 +129,7 @@ export default {
         console.log(userInfoData.data.token);
         localStorage.setItem("user_id", userInfoData.data.user_id);
         localStorage.setItem("token", userInfoData.data.token);
-        this.$router.push("/dashboard/home");
+         this.$router.push({ path: "/dashboard/home", query: { active: 0 } });
       }
     },
     //验证码接口
@@ -138,24 +138,32 @@ export default {
         phone: this.phone
       });
       console.log(userInfoData);
-      this.getVerif = false;
-      let fun = () => {
-        if (this.v_second > 0) {
-          this.v_second = this.v_second - 1;
-        } else {
-          this.getVerif = true;
-          console.log("....");
-          clearInterval(myVar);
-          this.v_second = 60;
-        }
-      };
-      let myVar = setInterval(() => {
-        fun();
-      }, 1000);
-    },
-
-  
-    
+      if (userInfoData.state === 10001) {
+        toast({
+          text: userInfoData.msg,
+          time: 1000
+        });
+        this.getVerif = false;
+        let fun = () => {
+          if (this.v_second > 0) {
+            this.v_second = this.v_second - 1;
+          } else {
+            this.getVerif = true;
+            console.log("....");
+            clearInterval(myVar);
+            this.v_second = 60;
+          }
+        };
+        let myVar = setInterval(() => {
+          fun();
+        }, 1000);
+      } else {
+        toast({
+          text: userInfoData.msg,
+          time: 1000
+        });
+      }
+    }
   }
 };
 </script>

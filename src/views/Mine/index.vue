@@ -10,16 +10,16 @@
         </div>
 
         <div class="header-xinxi">
-          <p class="header-name c_fff fs18 fw_b">{{user_name}}</p>
+          <p class="header-name c_fff fs18 fw_b" style="font-size:15px;">{{user_name}}</p>
 
           <p style="float:left" class="header-company c_fff fs14 fw_400" @click="vipBtn">
             <span>{{vip_level}}{{vip_num}}/{{consumption_amount}}＞</span>
           </p>
 
-          <label style="float:left;margin-left:10px;color:#F6F6F6" @click="walletSubmit">
-            {{balance}}
-            <p>钱包</p>
-          </label>
+          <div class="wallet" @click="walletSubmit">
+            <span>{{balance}}</span>
+             <span>钱包</span>
+          </div>
         </div>
       </div>
 
@@ -28,7 +28,7 @@
         <van-tabbar
           :border="false"
           v-model="active"
-          @change="onChange"
+          @change="onChange()"
           :fixed="false"
           style="margin-top:10px"
         >
@@ -193,9 +193,9 @@ export default {
     onSubmit(index) {
       this.ageNum = index;
     },
-    onChange(index) {
-      console.log(index + "菜单");
-      this.$router.push({ path: "/tradeOrder", query: { index: index } });
+    onChange() {
+      console.log(this.active + "菜单");
+      this.$router.push({ path: "/tradeOrder", query: { index:this.active  } });
     },
     setting() {
       this.$router.push("/setting");
@@ -272,7 +272,7 @@ export default {
       }
     }
     .header-xinxi {
-      margin-left: 30px;
+      margin-left: 20px;
       .header-name {
         margin-top: 10px;
       }
@@ -281,11 +281,26 @@ export default {
         margin-top: 10px;
         background: rgba(111, 182, 143, 1);
         border-radius: 30px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        width: 160px;
         span {
-          margin: 0 15px 0 10px;
+          margin-left: 10px;
           border-bottom: 2px solid;
+          font-size:12px;
         }
+       
       }
+       .wallet {
+          position: absolute;
+          right: 15px;
+          margin-top: 10px;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          color:#FFFEFFFF;
+        }
     }
   }
 
@@ -341,5 +356,10 @@ export default {
     // border: none !important;
     color: #ffffff !important;
   }
+}
+.van-icon-setting-o{
+  position: absolute;
+  top: 10px;
+  right: 10px;
 }
 </style>

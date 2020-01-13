@@ -86,8 +86,14 @@ export default {
           text: "两次密码输入的不一致",
           time: 1000
         });
-      } else {
-        this.register();
+      } else if(!/^[1][3456789]\d{9}$/.test(this.phone)){
+         toast({
+          text: "请输入正确的手机号",
+          time: 1000
+        });
+      }
+      else{
+         this.register();
       }
     },
     //注册发送验证码接口

@@ -195,22 +195,6 @@
         });
       },
       //
-      childBtn(index) {
-        switch (index) {
-          case 0:
-            this.$router.push("/rice");
-            break;
-          case 1:
-            this.$router.push("/rice");
-            break;
-          case 2:
-            this.$router.push("/rice");
-            break;
-          case 3:
-            this.$router.push("/rice");
-            break;
-        }
-      }
     },
     created() {
       this.loadingShow = true;

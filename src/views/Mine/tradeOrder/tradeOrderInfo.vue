@@ -32,7 +32,7 @@
       </div>
     </div>
 
-    <div class="cardMenu3" v-if="state" >
+    <div class="cardMenu3" v-if="state">
       <div class="list-item flex">
         <div class="list-item-center fs15 flex flex_y_center">账户余额</div>
         <div
@@ -84,14 +84,16 @@
 
       <!--  -->
       <!-- 密码输入框 -->
-      <van-password-input
-        class="input_pass"
-        v-if="input_passState"
-        :value="InputPassvalue"
-        info="密码为 6 位数字"
-        :focused="showKeyboard"
-        @focus="showKeyboard = true"
-      />
+
+      <div class="passdialog" v-if="input_passState">
+        <van-password-input
+          class="input_pass"
+          :value="InputPassvalue"
+          info="密码为 6 位数字"
+          :focused="showKeyboard"
+          @focus="showKeyboard = true"
+        />
+      </div>
 
       <!-- 数字键盘 -->
       <van-number-keyboard
@@ -101,6 +103,7 @@
         @delete="onDelete"
         @blur="showKeyboard = false"
       />
+      <!--  -->
 
       <van-submit-bar button-text="支付" @submit="onSubmitForm">
         <span>
@@ -126,16 +129,23 @@ export default {
       dataList: "",
       balanceMoney: "",
       totalMoney: "",
-	  input_passState: false,
-	  state:false
+      input_passState: false,
+      state: false,
+      showKeyboard: true,
+      InputPassvalue: ""
     };
   },
   methods: {
     //订单支付
     onSubmitForm() {
       if (this.radioValue == 3) {
-        //  this.OrderCommit();
+        // this.orderDiaoq()
         this.input_passState = true;
+      } else {
+        toast({
+          text: "暂时没有开通此功能",
+          time: 1000
+        });
       }
     },
     backBtn() {
@@ -156,6 +166,56 @@ export default {
       console.log(this.dataList);
     },
     //待付款去支付
+    // async orderDiaoq() {
+    //   let orderDiaoq = await this.service.order.orderDiaoq({
+    //     user_id: localStorage.getItem("user_id"),
+    //     token: localStorage.getItem("token"),
+    //     order_id: this.$route.query.order_id
+    //   });
+    //   console.log(orderDiaoq);
+    //   this.dataList = orderDiaoq.data;
+    //   console.log(this.orderDiaoq);
+    //   this.balanceMoney = this.orderDiaoq.zhye;
+    //   this.totalMoney = this.orderDiaoq.money;
+    // },
+    // 支付密码键盘输入
+    onInput(key) {
+      this.InputPassvalue = (this.InputPassvalue + key).slice(0, 6);
+      if (this.InputPassvalue.length === 6) {
+        this.PayAndCommit();
+        this.input_passState = false;
+      }
+    },
+    onDelete() {
+      this.InputPassvalue = this.InputPassvalue.slice(
+        0,
+        this.InputPassvalue.length - 1
+      );
+    },
+    //支付框密码验证
+    async PayAndCommit() {
+      let PayAndCommit = await this.service.order.PayAndCommit({
+        user_id: localStorage.getItem("user_id"),
+        token: localStorage.getItem("token"),
+        order_id: this.$route.query.order_id,
+        paycode: this.InputPassvalue
+      });
+      console.log(PayAndCommit);
+      if (PayAndCommit.state === 10001) {
+        toast({
+          text: PayAndCommit.msg,
+          time: 1000
+        });
+        this.$router.go(-1);
+      } else {
+        toast({
+          text: PayAndCommit.msg,
+          time: 1000
+        });
+        this.InputPassvalue=''
+      }
+    },
+    //待付款去支付
     async awaitPay() {
       let awaitPay = await this.service.order.awaitPay({
         user_id: localStorage.getItem("user_id"),
@@ -171,7 +231,7 @@ export default {
   },
   created() {
     if (this.$route.query.state == "待付款") {
-		this.state=true
+      this.state = true;
       this.awaitPay();
     } else {
       this.payDetails();
@@ -234,7 +294,28 @@ export default {
   color: red;
   margin-right: 10px;
 }
-// .input_pass{
-	
-// }
+//
+.passdialog /deep/ {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  top: 0;
+  left: 0;
+  z-index: 99;
+  .input_pass {
+    position: fixed;
+    margin: 0 auto;
+    width: 92%;
+    top: 40%;
+  }
+  .van-password-input__info {
+    position: fixed;
+    top: 48%;
+    left: 30%;
+  }
+}
+.van-submit-bar {
+  z-index: 60;
+}
 </style>

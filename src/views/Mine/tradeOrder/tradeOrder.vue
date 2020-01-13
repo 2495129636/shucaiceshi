@@ -125,9 +125,7 @@ export default {
       this.$router.push({ path: "/tradeOrder", query: { index: index } });
       this.PayList();
     },
-    init() {
-      this.active = this.$route.query.index;
-    },
+ 
     //
     async PayList() {
       let PayList = await this.service.order.PayList({
@@ -155,7 +153,10 @@ export default {
    
   },
   created() {
-    this.PayList();
+   
+    this.active=this.$route.query.index
+    // console.log(this.active)
+     this.PayList();
   }
 };
 </script>

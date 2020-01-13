@@ -58,6 +58,12 @@ export default {
             text: "支付密码必须设置6位数的数字",
             time: 1000
           });
+        } else if (!/^[1][3456789]\d{9}$/.test(this.phone)) {
+          toast({
+            text: "请输入正确的手机号",
+            time: 1000
+          });
+          return false;
         } else {
           this.PayPass();
         }
@@ -99,9 +105,8 @@ export default {
           text: PayPass.msg,
           time: 1000
         });
-      }
-      else{
-          this.$router.go(-1)
+      } else {
+        this.$router.go(-1);
       }
     },
     backBtn() {

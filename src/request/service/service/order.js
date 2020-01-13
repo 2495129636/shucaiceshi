@@ -36,6 +36,10 @@ export const services = {
     //待收货和确认收货
     getGoodsDetails:(params)=>{
         return POST('orders/queren',params)
+    },
+    //订单待付款页调取
+    orderDiaoq:(params)=>{
+        return POST('orders/diaoq',params)
     }
    
 };

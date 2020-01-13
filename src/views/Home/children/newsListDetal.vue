@@ -7,13 +7,13 @@
                 {{newsinfo.title}}
             </div>
             <div class="from">
-                <span>来源：人民日报</span>
+                <span>来源：麦菜</span>
                 <span>{{newsinfo.time1}}</span>
             </div>
 
-            <!-- <div class="img">
-                <img :src="newinfo.img" alt="">
-            </div> -->
+            <div class="img">
+                <img src="newinfo.img" alt="">
+             </div> 
 
             <div class="Ccontent">
                 <!-- {{}} -->

@@ -15,17 +15,21 @@
       <div class="goods_right">
         <div class="goods_title">
           <span>{{i.goods_name}}</span>
+          <span > 倒计时：<span class="second">{{i.timeformat}}</span></span>
         </div>
         <div class="goods_content">
-          <p> {{i.goods_content}}</p>
+          <p>{{i.goods_content}}</p>
         </div>
-		<div class="goods_bottom">
-          <span> ￥{{i.limited_time_purchase_price}}   <span class="limitPrice">￥{{i.goods_price}}</span></span>
-		  <button @click="ToDetail(i.id)">选规格</button>
+        <div class="goods_bottom">
+          <span>
+            ￥{{i.limited_time_purchase_price}}
+            <span class="limitPrice">￥{{i.goods_price}}</span>
+          </span>
+          <button @click="ToDetail(i.id)">选规格</button>
         </div>
-		<!-- <div class="goods_bottom">
+        <!-- <div class="goods_bottom">
           <span>{{i.limited_time_purchase_time}}</span>
-        </div> -->
+        </div>-->
       </div>
     </div>
   </div>
@@ -40,7 +44,9 @@ export default {
   data() {
     return {
       imgList: [],
-      itemGoodsList: ""
+      itemGoodsList: "",
+      time: "",
+      Timer:''
     };
   },
   methods: {
@@ -50,15 +56,15 @@ export default {
     backBtn() {
       this.$router.push("/dashboard/home");
     },
-    ToDetail(e){
-     this.$router.push({
-        path:'/shopinfo',
-        query:{
-          id:e
+    ToDetail(e) {
+      this.$router.push({
+        path: "/shopinfo",
+        query: {
+          id: e
         }
-      })
+      });
     },
-    
+
     async gethomeImg() {
       let Dengs = await this.service.home.gethomeImg();
       if (Dengs.state == -1) {
@@ -74,12 +80,59 @@ export default {
       let LimitTime = await this.service.mall.LimitTime({});
       console.log(LimitTime);
       this.itemGoodsList = LimitTime.data;
+      this.time = LimitTime.data.time;
+    },
+    //时分秒
+    formatSeconds(value) {
+      var secondTime = parseInt(value); // 秒
+      var minuteTime = 0; // 分
+      var hourTime = 0; // 小时
+      if (secondTime > 60) {
+        //如果秒数大于60，将秒数转换成整数
+        //获取分钟，除以60取整数，得到整数分钟
+        minuteTime = parseInt(secondTime / 60);
+        //获取秒数，秒数取佘，得到整数秒数
+        secondTime = parseInt(secondTime % 60);
+        //如果分钟大于60，将分钟转换成小时
+        if (minuteTime > 60) {
+          //获取小时，获取分钟除以60，得到整数小时
+          hourTime = parseInt(minuteTime / 60);
+          //获取小时后取佘的分，获取分钟除以60取佘的分
+          minuteTime = parseInt(minuteTime % 60);
+        }
+      }
+      var result = "" + parseInt(secondTime) + "秒";
+
+      if (minuteTime > 0) {
+        result = "" + parseInt(minuteTime) + "分" + result;
+      }
+      if (hourTime > 0) {
+        result = "" + parseInt(hourTime) + "小时" + result;
+      }
+      return result;
     }
   },
-  created() {
+  async created() {
     // this.gethomeImg();
-    this.LimitTime();
-  }
+    await this.LimitTime();
+    this.Timer= setInterval(() => {
+      
+      this.itemGoodsList.map((val)=>{
+        if(val.time>0){
+          val.time=val.time-1
+         val.timeformat= this.formatSeconds(val.time);
+        }
+        else{
+        
+          val.timeformat='结束'
+        }
+        
+      })
+    }, 1000);
+  },
+  destroyed() {
+    setInterval(this.Timer)
+  },
 };
 </script>
 
@@ -120,11 +173,20 @@ export default {
     flex-direction: column;
     justify-content: space-around;
     .goods_title {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
       span {
         font-size: 15px;
         font-weight: 400;
         color: rgba(30, 30, 30, 1);
         margin-right: 5px;
+        &:last-child{
+          font-size: 10px;
+          .second{
+            color: red;
+          }
+        }
       }
     }
     .goods_content {
@@ -139,13 +201,13 @@ export default {
       display: flex;
       flex-direction: row;
       justify-content: space-between;
-	  span{
-		  .limitPrice{
-			  color: #B5B3B2FF;
-			  font-size: 12px;
-			  text-decoration: line-through;
-		  }
-	  }
+      span {
+        .limitPrice {
+          color: #b5b3b2ff;
+          font-size: 12px;
+          text-decoration: line-through;
+        }
+      }
       button {
         width: 55px;
         height: 20px;

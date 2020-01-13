@@ -52,11 +52,12 @@
         <div class="goods_bottom">
           <span>单价：￥{{i.price}}</span>
         </div>
-        <div class="goods_bottom" v-if="is_open_vip_price==1">
-          <span>会员价：￥{{i.price}}</span>
+
+        <div class="goods_bottom" v-if="i.is_xsg ==1">
+          <span>限时购价：￥{{i.s_money}}</span>
         </div>
-        <div class="goods_bottom" v-if="is_limited_time_purchase==1">
-          <span>限时购价：￥{{i.price}}</span>
+        <div class="goods_bottom" v-if="i.is_open_vip_price == 1">
+          <span>会员价：￥{{i.h_money}}</span>
         </div>
       </div>
       <div class="goods_right_right">
@@ -73,7 +74,7 @@
           style="margin-right:20px"
         >¥{{shopMoney}}</div>
       </div>
-      <div class="list-item flex">
+      <div class="list-item flex" v-if="z_status==1">
         <div class="list-item-center fs15 flex flex_y_center">配送费</div>
         <div
           class="list-item-right flex_center flex flex_1 flex_x_right"
@@ -145,29 +146,31 @@
       </van-submit-bar>
       <!--  -->
       <!-- 密码输入框 -->
-      <van-password-input class="input_pass" v-if="input_passState"
 
-        :value="InputPassvalue"
-        info="密码为 6 位数字"
-        :focused="showKeyboard"
-        @focus="showKeyboard = true"
-      />
+      <div class="passdialog" v-if="input_passState">
+        <van-password-input
+          class="input_pass"
+          :value="InputPassvalue"
+          info="密码为 6 位数字"
+          :focused="showKeyboard"
+          @focus="showKeyboard = true"
+        />
+      </div>
 
       <!-- 数字键盘 -->
       <van-number-keyboard
-      v-if="input_passState"
+        v-if="input_passState"
         :show="showKeyboard"
         @input="onInput"
         @delete="onDelete"
         @blur="showKeyboard = false"
       />
-      
-      
     </div>
   </div>
 </template>
 
 <script>
+import toast from "@/utils/toast";
 import navHeader from "@/components/header";
 export default {
   components: {
@@ -175,9 +178,9 @@ export default {
   },
   data() {
     return {
-      InputPassvalue: '',
+      InputPassvalue: "",
       showKeyboard: true,
-      // 
+      //
       Totalprice: 0,
       radio: "1",
       shopMoney: 0,
@@ -190,9 +193,9 @@ export default {
       addressInfo: "",
       itemGoodsList: "",
       z_status: 2,
-      input_passState:false,
-      OrderCommitId:'',
-      gw_id:''
+      input_passState: false,
+      OrderCommitId: "",
+      gw_id: ""
     };
   },
   methods: {
@@ -202,10 +205,15 @@ export default {
 
     //订单支付
     onSubmitForm() {
-      
       if (this.radio == 3) {
-         this.OrderCommit();
+        this.OrderCommit();
+      }else{
+        toast({
+          text: "暂时没有开通此功能",
+          time: 1000
+        });
       }
+
     },
     onSubmit(index) {
       if (index == 0) {
@@ -220,7 +228,7 @@ export default {
     },
 
     backBtn() {
-      this.$router.push('/dashboard/shopcart')
+      this.$router.push("/dashboard/shopcart");
     },
     //更换地址
     chengeAdress(e) {
@@ -228,19 +236,19 @@ export default {
     },
     //购物车结算
     async CartPay() {
-       this.gw_id=JSON.parse(sessionStorage.getItem("pushId"))
+      this.gw_id = JSON.parse(sessionStorage.getItem("pushId"));
       let CartPay = await this.service.order.CartPay({
         user_id: localStorage.getItem("user_id"),
         token: localStorage.getItem("token"),
         gw_id: this.gw_id
       });
+      console.log(CartPay);
       if (CartPay.state === 10001) {
         this.addressInfo = CartPay.data.address;
         this.balanceMoney = CartPay.data.zhye;
         this.shopMoney = CartPay.data.price;
         this.courierMoney = CartPay.data.psf;
         this.itemGoodsList = CartPay.data.goods;
-       
       }
     },
     //提交订单 (余额结算)
@@ -254,33 +262,48 @@ export default {
         remark: this.message
       });
       console.log(OrderCommit);
-      if(OrderCommit.state===10001){
-        this.OrderCommitId = OrderCommit.data
-         this.input_passState=true
+      if (OrderCommit.state === 10001) {
+        this.OrderCommitId = OrderCommit.data;
+        this.input_passState = true;
       }
     },
     //支付框密码验证
-    async PayAndCommit(){
-    let PayAndCommit=await this.service.order.PayAndCommit({
-      user_id: localStorage.getItem("user_id"),
+    async PayAndCommit() {
+      let PayAndCommit = await this.service.order.PayAndCommit({
+        user_id: localStorage.getItem("user_id"),
         token: localStorage.getItem("token"),
-        order_id:this.OrderCommitId,
-        paycode:this.InputPassvalue,
-    })
-    console.log(PayAndCommit)
-    console.log(this.OrderCommitId)
+        order_id: this.OrderCommitId,
+        paycode: this.InputPassvalue
+      });
+      console.log(PayAndCommit);
+      // console.log(this.OrderCommitId);
+      if (this.state === 10001) {
+        toast({
+          text: "支付成功",
+          time: 1000
+        });
+         this.$router.push({ path: "/tradeOrder", query: { index: 2 } });
+      } else {
+        toast({
+          text: PayAndCommit.msg,
+          time: 1000
+        });
+         this.$router.push({ path: "/tradeOrder", query: { index: 1} });
+      }
     },
     // 支付密码键盘输入
-     onInput(key) {
+    onInput(key) {
       this.InputPassvalue = (this.InputPassvalue + key).slice(0, 6);
-      if(this.InputPassvalue.length===6){
-        this.PayAndCommit()
-        this.input_passState=false
-        
+      if (this.InputPassvalue.length === 6) {
+        this.PayAndCommit();
+        this.input_passState = false;
       }
     },
     onDelete() {
-      this.InputPassvalue = this.InputPassvalue.slice(0, this.InputPassvalue.length - 1);
+      this.InputPassvalue = this.InputPassvalue.slice(
+        0,
+        this.InputPassvalue.length - 1
+      );
     }
   },
   async created() {
@@ -412,7 +435,26 @@ export default {
 .cardMenu4 {
   margin-bottom: 60px !important;
 }
-.input_pass{
-  margin-bottom: 300px;
+
+//
+.passdialog /deep/ {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  top: 0;
+  left: 0;
+  z-index: 99;
+  .input_pass {
+    position: fixed;
+    margin: 0 auto;
+    width: 92%;
+    top: 40%;
+  }
+  .van-password-input__info {
+    position: fixed;
+    top: 48%;
+    left: 30%;
+  }
 }
 </style>

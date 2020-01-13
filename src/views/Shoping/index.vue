@@ -98,7 +98,9 @@ export default {
     async onTopLable(index) {
       this.id1 = this.classTotal[index].id;
       await this.classTwo();
+      this.activeKey=0
       this.goodsList();
+
     },
     onLeftLable(index) {
       console.log("---" + index);

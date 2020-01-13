@@ -159,8 +159,9 @@ export default {
       }
     }
   },
-  created() {
-    this.getDetail();
+  async created() {
+    await this.getDetail();
+    this.changeIdx(0)
     this.Cartjudge();
   }
 };
